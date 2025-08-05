@@ -62,7 +62,7 @@
 
     function processText() {
       const input = document.getElementById('inputText').value;
-      const output = mode === "S2R"
+      const output = mode === "R2S"
         ? translate(input, shuffToReal)
         : translate(input, realToShuff);
       document.getElementById('output').textContent = output;
