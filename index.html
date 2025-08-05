@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SecTran</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+    }
+    input, button {
+      font-size: 1em;
+      padding: 8px;
+      margin: 5px;
+    }
+    #output {
+      display: inline-block;
+      margin: 10px 5px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>SecTran</h2>
+
+  <input type="text" id="inputText" placeholder="Enter your text here" size="40">
+  <button id="toggleMode">English → Secret</button>
+  <button id="processBtn">Process</button>
+  <br><br>
+
+  <span id="output"></span>
+  <button id="copyBtn">Copy</button>
+
+  <script>
+    // Mappings
+    const realToShuff = {
+      a: 'd', b: 'e', c: 'o', d: 'y', e: 'x', f: 'p', g: 'f',
+      h: 'k', i: 'w', j: 'u', k: 'n', l: 'j', m: 'g', n: 'v',
+      o: 'a', p: 'z', q: 'q', r: 'h', s: 'm', t: 's', u: 'b',
+      v: 'l', w: 'c', x: 'i', y: 'r', z: 't'
+    };
+
+    const shuffToReal = {};
+    for (const [key, val] of Object.entries(realToShuff)) {
+      shuffToReal[val] = key;
+    }
+
+    let mode = "S2R"; // Start with Secret -> Real
+
+    // Translation logic
+    function translate(text, map) {
+      return text.split('').map(c => {
+        const lower = c.toLowerCase();
+        if (map[lower]) {
+          return map[lower];
+        } else {
+          return c;
+        }
+      }).join('');
+    }
+
+    function processText() {
+      const input = document.getElementById('inputText').value;
+      const output = mode === "S2R"
+        ? translate(input, shuffToReal)
+        : translate(input, realToShuff);
+      document.getElementById('output').textContent = output;
+    }
+
+    function toggleMode() {
+      mode = mode === "S2R" ? "R2S" : "S2R";
+      document.getElementById('toggleMode').textContent = 
+        mode === "S2R" ? "English → Secret" : "Secret → English";
+    }
+
+    function copyOutput() {
+      const outputText = document.getElementById('output').textContent;
+      navigator.clipboard.writeText(outputText).then(() => {
+        alert("Copied to clipboard!");
+      });
+    }
+
+    // Event bindings
+    document.getElementById('toggleMode').onclick = toggleMode;
+    document.getElementById('processBtn').onclick = processText;
+    document.getElementById('copyBtn').onclick = copyOutput;
+    document.getElementById('inputText').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        processText();
+      }
+    });
+  </script>
+
+</body>
+</html>
